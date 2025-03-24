@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@types/node": "^22.13.13"
+  },
+  "scripts": {
+    "prestart": "tsc",
+    "start": "node dist/machine"
+  },
+  "type": "module"
+}

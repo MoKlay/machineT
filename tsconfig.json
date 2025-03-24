@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "esnext",  // Or "ES2020", "ES2021", etc.  Choose the latest supported by your target runtime
+    "lib": ["esnext", "dom"], // Include latest JS features and DOM APIs (if you're in a browser environment)
+
+    /* Modules */
+    "module": "esnext",  // Or "ES2020", "ES2022", etc.  Use modern module syntax
+    "moduleResolution": "node", // Node.js style module resolution
+    "esModuleInterop": true, // Allow importing CommonJS modules as ES modules (important for compatibility)
+    "forceConsistentCasingInFileNames": true, // Enforce case-sensitive file names for better consistency
+
+    /* Type Checking */
+    "strict": true,
+
+    /* Emit */
+    "sourceMap": true,     // Generate source maps for debugging
+    "outDir": "dist",      // Output directory for compiled files (change as needed)
+    "removeComments": true, // Remove comments from generated JavaScript
+
+    /* Advanced Options */
+    "skipLibCheck": true,   // Skip type checking of declaration files (*.d.ts) - improves build time
+    "resolveJsonModule": true, // Allows importing JSON files as modules
+    "baseUrl": ".",       // Base directory to resolve non-absolute module names. If changed also change compilerOptions.paths
+    "paths": {
+      "*": [
+        "src/*",
+        "node_modules/*"
+      ]
+    },
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx", // Enable JSX transformation for React
+    "experimentalDecorators": true,  // Enable experimental support for decorators (if you use them)
+    "emitDecoratorMetadata": true    // Emit design-type metadata for decorated declarations in design-time
+
+  },
+  "include": ["src/**/*"], //  Or ["src/**/*", "test/**/*"] if you want to check your tests
+  "exclude": ["node_modules"]
+}
