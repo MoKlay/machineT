@@ -1,6 +1,5 @@
 import * as readline from 'readline';
 import * as fs from 'fs';
-import * as path from 'path';
 
 // Определение типов (как и раньше)
 type State = string;
@@ -248,7 +247,7 @@ async function loadConfigFromFile(filename: string): Promise<TuringMachineConfig
 }
 
 
-    
+
 
     const defaultFilename = 'config.json';
     let config: TuringMachineConfig | null = null;
@@ -292,7 +291,7 @@ async function loadConfigFromFile(filename: string): Promise<TuringMachineConfig
             console.log(`${state},${symbol} -> ${nextState},${write},${move}`);
           }
         }
-    
+
         for (const state of states) {
           if (acceptingStates.includes(state)) continue
           tt[state] = {}
@@ -305,12 +304,6 @@ async function loadConfigFromFile(filename: string): Promise<TuringMachineConfig
         console.log(`${initialState} - начальное состояние, ${config.initialState} ∈ Q;`);
         console.log(`${acceptingStates} - заключительное состояние, ${config.acceptingStates} ∈ Q;`);
     }
-    
-    
-    
-    
-    
-    
 
     await waitForEnter()
 

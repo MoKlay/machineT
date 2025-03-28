@@ -1,0 +1,73 @@
+
+.states
+  display: flex
+  align-items: center
+  gap: 2px
+  user-select: none
+  font-size: 1.5rem
+
+
+  *
+    font-size: 1.5rem
+    margin: 0
+    padding: 0
+
+    
+  .input
+    display: flex
+    align-items: flex-end
+    div
+      display: flex
+      align-items: flex-end
+      &:has(p)
+        margin-right: 0.5ch
+
+      &:last-of-type
+        width: 0
+        visibility: hidden
+        margin: 0
+        &:has(input:focus)
+          width: auto
+          visibility: visible
+        input
+          &:focus
+            visibility: visible
+            padding: 1px 5px
+            border: 1px solid
+            box-shadow: 0 0 4px
+        p
+          margin-right: 0.5ch
+
+  input
+    text-align: center
+    padding: 0
+    border: 0
+    border-radius: 3px
+    outline: 0
+    transition: .1s ease
+    &:focus
+      padding: 1px 5px
+      border: 1px solid
+      box-shadow: 0 0 4px
+
+  &:hover
+    .input
+      div
+        width: auto
+        &:last-of-type
+          visibility: visible
+          input
+            padding: 1px 5px
+            border: 1px solid
+  &:has( > .input > div:nth-last-child(2) > input:focus)
+    .input
+      div
+        &:last-of-type
+          visibility: visible
+          width: auto
+          input
+            padding: 1px 5px
+            border: 1px solid
+    
+    
+      
