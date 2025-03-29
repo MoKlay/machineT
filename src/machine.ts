@@ -112,7 +112,10 @@ class TuringMachine {
             }
 
             if (this.config.acceptingStates.includes(this.currentState)) {
+
                 console.log("Принято!");
+                console.log(`Шагов: ${steps}`);
+                
                 return true;
             }
 
@@ -141,27 +144,44 @@ class TuringMachine {
 }
 
 async function configureTuringMachine(): Promise<TuringMachineConfig> {
-    const states = ((await askQuestion("Введите список состояний (например, q0,q1,q_accept): ")).split(',')).map(v => v.trim()).filter((v, i, s) => s.indexOf(v) === i);
+    const states = ((await askQuestion("Введите список состояний: ")).split(',')).map(v => v.trim()).filter((v, i, s) => s.indexOf(v) === i);
     const alphabet = await (async () => {
       while (true) {
-        const res = (await askQuestion( "Введите список символов алфавита (например, 0,1,_): ")).split(',').map(v => v.trim()).filter((v, i, s) => s.indexOf(v) === i)
+        console.clear();
+        console.log(`Введите список состояний: ${states.join(',')}`);        
+        const res = (await askQuestion( "Введите список символов алфавита: ")).split(',').map(v => v.trim()).filter((v, i, s) => s.indexOf(v) === i)
         if (res.every((v) => v.length == 1)) return res
       }
     })()
     const blank = await (async () => {
       while (true) {
+        console.clear();
+        console.log(`Введите список состояний: ${states.join(',')}`);
+        console.log(`Введите список символов алфавита:  ${alphabet.join(',')}`);
+
         const res = (await askQuestion("Введите символ пустого места: "))[0]
         if (alphabet.includes(res)) return res
       }
     })()
     const initialState = await (async () => {
       while (true) {
+        console.clear();
+        console.log(`Введите список состояний: ${states.join(',')}`);
+        console.log(`Введите список символов алфавита:  ${alphabet.join(',')}`);
+        console.log(`Введите символ пустого места: ${blank}`);
+        
+
         const res = (await askQuestion("Введите начальное состояние: "))
         if (states.includes(res)) return res
       }
     })()
     const acceptingStates = await (async() => {
       while (true) {
+        console.clear();
+        console.log(`Введите список состояний: ${states.join(',')}`);
+        console.log(`Введите список символов алфавита:  ${alphabet.join(',')}`);
+        console.log(`Введите символ пустого места: ${blank}`);
+        console.log(`Введите начальное состояние:  ${initialState}`);
         const res = (await askQuestion("Введите заключительное состояние: "));
         if (states.includes(res)) return res
       }
