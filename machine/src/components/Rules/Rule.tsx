@@ -28,12 +28,16 @@ export default function Rule() {
   }, [currentState, read, nextState, write, move, setRule]);
 
   return (
-    <>
-      <Input state={currentState} type={TypeInput.currentState} />
-      <Input state={read} type={TypeInput.read} />
-      <Input state={nextState} type={TypeInput.nextState} />
-      <Input state={write} type={TypeInput.write} />
-      <InputDirection state={move} />
-    </>
+    <div className="role">
+      <div className="path">
+        <Input state={currentState} type={TypeInput.currentState} />
+        <Input state={read} type={TypeInput.read} />
+      </div>
+      <div className="path">
+        <Input state={nextState} type={TypeInput.nextState} />
+        <Input state={write} type={TypeInput.write} />
+        <InputDirection state={move} />
+      </div>
+    </div>
   );
 }

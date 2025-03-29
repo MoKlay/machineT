@@ -8,13 +8,13 @@ export default function RolesInputs() {
 
 
   return (
-    <>
+    <div className="roles">
     <p>δ:</p>
       {
         massRole.map((_, i) => (
           <Rule key={i}/>
         ))
       }
-    </>
+    </div>
   )
 }

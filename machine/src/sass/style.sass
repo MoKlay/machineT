@@ -70,4 +70,27 @@
             border: 1px solid
     
     
-      
+.roles
+  display: flex
+  flex-direction: column
+  p
+    margin: 0
+  .role
+    margin-left: 4ch
+    display: flex
+    align-items: center
+
+    input
+      width: 1ch
+
+    .select
+      p
+        margin: 0
+      .options
+        visibility: hidden
+        position: absolute
+        display: flex
+        flex-direction: column
+      &:hover
+        .options
+          visibility: visible

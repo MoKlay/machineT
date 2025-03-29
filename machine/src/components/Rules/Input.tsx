@@ -13,7 +13,7 @@ export default function Input({ state, type }: InputProps) {
     if (type == TypeInput.currentState)
       setter((preview) => {
         let newString = preview;
-        if (/[\D]*[0-9]*/.test(value)) newString = value;
+        if (/[\D]*[0-9]*/.test(value)) newString = value; 
         return newString + "";
       });
     if (type == TypeInput.read)
@@ -34,12 +34,7 @@ export default function Input({ state, type }: InputProps) {
         if (/[\D]*[0-9]*/.test(value)) newString = value;
         return newString + "";
       });
-    if (type == TypeInput.move)
-      setter((preview) => {
-        let newString = preview;
-        if (/[R,L,E]/.test(value)) newString = value;
-        return newString + "";
-      });
+
   }
 
   function handleSubmit(e: KeyboardEvent<HTMLInputElement>) {
@@ -54,6 +49,7 @@ export default function Input({ state, type }: InputProps) {
       value={value}
       onKeyDown={handleSubmit}
       onBlur={(e) => update(e.currentTarget.value)}
+      placeholder=""
     />
   );
 }
