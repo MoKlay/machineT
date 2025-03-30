@@ -21,8 +21,19 @@
       align-items: flex-end
       &:has(p)
         margin-right: 0.5ch
-
+      &::after
+        content: ','
+        margin-right: 0.5ch
+      &:nth-last-child(2)
+        &::after
+          content: none
+        
       &:last-of-type
+        &::after
+          content: none
+        &::before
+          content: ','
+          margin-right: 0.5ch
         width: 0
         visibility: hidden
         margin: 0
@@ -37,6 +48,9 @@
             box-shadow: 0 0 4px
         p
           margin-right: 0.5ch
+      &:first-child
+        &::before
+          content: none
 
   input
     text-align: center
@@ -70,27 +84,89 @@
             border: 1px solid
     
     
-.roles
+.rules
   display: flex
   flex-direction: column
+  gap: 10px
+  *
+    font-size: 1.1rem
   p
     margin: 0
-  .role
-    margin-left: 4ch
-    display: flex
-    align-items: center
+  .rules-state
 
-    input
-      width: 1ch
+    .rule
+      margin-left: 2ch
+      display: flex
+      align-items: center
 
-    .select
-      p
-        margin: 0
-      .options
-        visibility: hidden
-        position: absolute
+      input
+        width: 1ch
+        border: 0
+        padding: 0
+        outline: 0
+        transition: .1s ease
+        &.error
+          animation: error 1s ease
+          padding: 2px 5px
+          border: 1px solid
+          border-radius: 3px
+          @keyframes error 
+            0%
+              outline: 0
+            20%
+              outline: 1px solid red
+            40%
+              outline: 0
+            60%
+              outline: 1px solid red
+            80%
+              outline: 0
+            
+          
+        &:placeholder-shown, &:focus
+          padding: 2px 5px
+          border: 1px solid
+          border-radius: 3px
+
+      .path
         display: flex
-        flex-direction: column
-      &:hover
+        align-items: center
+        &:nth-last-child(2)
+          &::after
+            content: '⮕'
+            margin: 0 1ch
+        div
+          &::after
+            content: ","
+            margin-right: 0.5ch
+          &:last-of-type
+            &::after
+              content: ''
+
+      .select
+        display: flex
+        position: relative
+        p
+          margin: 0
         .options
-          visibility: visible
+          top: 50%
+          transform: translateY(-50%)
+
+          visibility: hidden
+          position: absolute
+          display: flex
+          border: 1px solid
+          border-radius: 3px
+
+          input
+            background: #fff
+            width: 2ch
+            text-align: start
+            padding: 2px 5px 2px 1px
+            &.active
+              background-color: red
+        &:hover
+          .options
+            visibility: visible
+
+@import table

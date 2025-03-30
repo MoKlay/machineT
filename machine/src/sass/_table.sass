@@ -1,0 +1,175 @@
+// Цветовая палитра (настраиваемая)
+$primary-color: #007bff
+$secondary-color: #6c757d
+$light-gray: #f2f2f2
+$lighter-gray: #f9f9f9
+$hover-color: #e0e0e0
+$current-state-color: #cceeff
+$text-color: #333
+
+// Общие стили таблицы
+table
+  border-collapse: collapse 
+
+  margin: 10px 0
+  font-family: sans-serif
+  font-size: 14px
+  color: $text-color
+
+// Стили заголовков
+tr
+  th
+    position: relative
+    background-color: $light-gray
+    text-align: center
+    padding: 8px
+    border: 1px solid #ddd
+    font-weight: bold
+    label
+      cursor: pointer
+      display: block
+      width: 100%
+      height: 100%
+      input
+        cursor: pointer
+        background: transparent
+        font-weight: bold
+        text-align: center
+        padding: 0
+        border: 0
+        border-radius: 3px
+        outline: 0
+        transition: .1s ease
+        &:focus
+          padding: 1px 5px
+          border: 1px solid
+          box-shadow: 0 0 4px
+    &:last-of-type
+      label
+        input
+          padding: 1px 5px
+          border: 1px solid
+    &:first-of-type
+      label
+        input
+          border: 0
+  &:last-of-type
+    th
+      &:first-of-type
+        label
+          input
+            padding: 1px 5px
+            border: 1px solid
+
+// Стили ячеек
+td
+  text-align: center
+  padding: 8px
+  border: 1px solid #ddd
+
+  .rule
+      margin-left: 2ch
+      display: flex
+      align-items: center
+
+      input
+        width: 1ch
+        border: 0
+        padding: 0
+        outline: 0
+        transition: .1s ease
+        &.error
+          animation: error 1s ease
+          padding: 2px 5px
+          border: 1px solid
+          border-radius: 3px
+          @keyframes error 
+            0%
+              outline: 0
+            20%
+              outline: 1px solid red
+            40%
+              outline: 0
+            60%
+              outline: 1px solid red
+            80%
+              outline: 0
+            
+          
+        &:placeholder-shown, &:focus
+          padding: 2px 5px
+          border: 1px solid
+          border-radius: 3px
+
+      .path
+        display: flex
+        align-items: center
+        &:nth-last-child(2)
+          &::after
+            content: '⮕'
+            margin: 0 1ch
+        div
+          &::after
+            content: ","
+            margin-right: 0.5ch
+          &:last-of-type
+            &::after
+              content: ''
+
+      .select
+        display: flex
+        position: relative
+        p
+          margin: 0
+        .options
+          top: 50%
+          transform: translateY(-50%)
+
+          visibility: hidden
+          position: absolute
+          display: flex
+          border: 1px solid
+          border-radius: 3px
+
+          input
+            background: #fff
+            width: 2ch
+            text-align: start
+            padding: 2px 5px 2px 1px
+            &.active
+              background-color: red
+        &:hover
+          .options
+            visibility: visible
+
+// Чередование строк
+tbody
+  tr
+    &:nth-child(even)
+      background-color: $lighter-gray
+
+    &:hover
+      background-color: $hover-color
+
+// Подсветка текущего состояния
+.current-state
+  background-color: $current-state-color
+
+// Выделение текущего символа
+.current-symbol
+  font-weight: bold
+
+// Стили для колонок
+.state-column,
+.symbol-column
+  width: 10%
+
+// Стиль для стрелки (пример)
+.arrow
+  display: inline-block
+  margin: 0 5px
+
+// Стиль для пустого символа
+.blank
+  font-style: italic
+  color: gray

@@ -5,9 +5,9 @@ export type Symbol = string;
 export type Direction = "L" | "R" | "E";
 
 export interface Transition {
-  write?: Symbol;
-  move?: Direction;
-  nextState?: State;
+  write: Symbol;
+  move: Direction;
+  nextState: State;
 }
 
 export type Setter<T> = Dispatch<SetStateAction<T>>;
@@ -20,6 +20,7 @@ export enum Key {
   acceptingState = "F",
   transitions = "δ",
   input = "Вводные данные",
+  separator = "#"
 }
 export interface Rule {
   [key: State]: {
@@ -35,15 +36,17 @@ export interface TuringMachineConfig {
   [Key.acceptingState]: [State, Setter<State>];
   [Key.transitions]: [Rule, Setter<Rule>];
   [Key.input]: [Symbol[], Setter<Symbol[]>];
+  [Key.separator]: [Symbol, Setter<Symbol>]
 }
 
 const context = createContext<TuringMachineConfig>({
-  [Key.states]: [[], () => {}],
-  [Key.alphabet]: [[], () => {}],
-  [Key.blank]: ["", () => {}],
-  [Key.initialState]: ["", () => {}],
-  [Key.acceptingState]: ["", () => {}],
-  [Key.transitions]: [{}, () => {}],
-  [Key.input]: [[], () => {}],
+  [Key.states]: [[], () => { } ],
+  [Key.alphabet]: [[], () => { } ],
+  [Key.blank]: ["", () => { } ],
+  [Key.initialState]: ["", () => { } ],
+  [Key.acceptingState]: ["", () => { } ],
+  [Key.transitions]: [{}, () => { } ],
+  [Key.input]: [[], () => { } ],
+  [Key.separator]: ['', () => {}]
 });
 export default context;
