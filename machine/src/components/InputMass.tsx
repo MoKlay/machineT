@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useCallback } from "react";
-import useConfig from "../hook/useConfig";
-import { Key, Rule } from "../hook/Context";
+import useConfig from "../hook/Config/useConfig";
+import { Key, Rule } from "../hook/Config/Context";
 import Input from "./Rules/Input";
 
 interface PropsInput {

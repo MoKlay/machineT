@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Input from "./Input";
 import InputDirection from "./Input.Direction";
-import { Direction, Key } from "../../hook/Context";
-import useConfig from "../../hook/useConfig";
+import { Direction, Key } from "../../hook/Config/Context";
+import useConfig from "../../hook/Config/useConfig";
 
 interface Rule {
   state: string;

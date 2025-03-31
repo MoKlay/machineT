@@ -1,5 +1,5 @@
-import { Key } from "../hook/Context";
-import useConfig from "../hook/useConfig";
+import { Key } from "../hook/Config/Context";
+import useConfig from "../hook/Config/useConfig";
 import Rule from "./Rules/Rule";
 
 export default function RolesInputs() {

@@ -1,5 +1,5 @@
-import { Direction, Key, Setter } from "../../hook/Context";
-import useConfig from "../../hook/useConfig";
+import { Direction, Key, Setter } from "../../hook/Config/Context";
+import useConfig from "../../hook/Config/useConfig";
 interface InputDirection {
   useState: [Direction, Setter<Direction>]
   state: string

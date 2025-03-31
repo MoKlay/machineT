@@ -1,7 +1,7 @@
 import { useCallback, ChangeEvent } from "react";
 import RuleState from "../components/Rules/Rule";
-import { Key, Rule, Symbol, Transition } from "../hook/Context";
-import useConfig from "../hook/useConfig";
+import { Key, Rule, Symbol, Transition } from "../hook/Config/Context";
+import useConfig from "../hook/Config/useConfig";
 
 export default function ComplianceTable() {
   const context = useConfig();
