@@ -11,15 +11,11 @@ interface Rule {
 }
 
 export default function RuleState({ state, read, leftShow }: Rule) {
-  const states = useConfig()[Key.states][0].filter((v) => v != "");
-  const alphabet = useConfig()[Key.alphabet][0].filter((v) => v != "");
-  const [transitions, setTransitions] = useConfig()[Key.transitions];
-
-  const [nextState, setNextState] = useState(
-    transitions[state][read].nextState
-  );
-  const [write, setWrite] = useState(transitions[state][read].write);
-  const [move, setMove] = useState<Direction>(transitions[state][read].move);
+  const [context, setContext] = useConfig()
+  const config = context.machines[context.index]
+  const transitions = config[Key.transitions]
+  const states = config[Key.states]
+  const alphabet = config[Key.alphabet]
 
   useEffect(() => {
     setNextState(transitions[state][read].nextState);

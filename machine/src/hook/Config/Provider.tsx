@@ -1,43 +1,86 @@
-import React, { useEffect } from "react";
-import Context, {
+import { useMemo, useState } from "react";
+import config, {
+  FunctionsUpdateTuringMachine,
   Key,
-  State,
-  Symbol,
-  Transition,
-  TuringMachineConfig,
+  TuringMachine,
 } from "./Context";
 
 export default function Config({ children }: React.PropsWithChildren) {
-  const states = React.useState<State[]>([""]);
-  const blank = React.useState<Symbol>(Key.blank);
-  const separator = React.useState<Symbol>(Key.separator);
-  const alphabet = React.useState<Symbol[]>([blank[0], separator[0], ""]);
-  const initialState = React.useState<State>("");
-  const acceptingState = React.useState<State>("");
-  const transitions = React.useState<{
-    [key: State]: { [read: Symbol]: Transition };
-  }>({});
-  const input = React.useState<Symbol[]>([]);
+  const [machinesConfig, setMachinesConfig] = useState<TuringMachine>({
+    index: 0,
+    machines: [],
+  });
 
-  useEffect(() => {
-    const [b, setBlank] = blank
-    const [s, setSeparator] = separator
-    const a = alphabet[0]
+  const functions = useMemo<FunctionsUpdateTuringMachine>(() => ({
+    [Key.states]: (i, w) => {
+      setMachinesConfig((prev) => {
+        const newState = [...prev.machines[prev.index][Key.states]]
+        const alphabet = prev.machines[prev.index][Key.alphabet]
+        const newRule = {...prev.machines[prev.index][Key.transitions]}
 
-    if (a[0] != b) setBlank(a[0] ? a[0] : '')
-    if (a[1] != s) setSeparator(a[1] ? a[1] : '')
-  }, [alphabet, blank, separator])
+        delete newRule[newState[i]]
+        newRule[w] = {}
+        alphabet.forEach(v => {
+          newRule[w][v] = {
+            nextState: w,
+            write: v,
+            move: 'E'
+          }
+        })
 
-  const contextValue: TuringMachineConfig = {
-    [Key.states]: states,
-    [Key.alphabet]: alphabet,
-    [Key.blank]: blank,
-    [Key.initialState]: initialState,
-    [Key.acceptingState]: acceptingState,
-    [Key.transitions]: transitions,
-    [Key.input]: input,
-    [Key.separator]: separator,
-  };
+        newState[i] = w
+        if (newState[i].length !== 0 && i+1 == newState.length) newState.push('')
 
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>;
+        const newConfig = {...prev.machines}
+        newConfig[prev.index] = {
+          ...newConfig[prev.index],
+          [Key.states]: newState,
+          [Key.transitions]: newRule
+        }
+
+        return {
+          ...prev,
+          machines: newConfig
+        }
+      })
+    },
+    [Key.alphabet]: () => {},
+    [Key.blank]: () => {},
+    [Key.initialState]: () => {},
+    [Key.acceptingState]: () => {},
+    [Key.transitions]: () => {},
+    [Key.input]: () => {},
+    [Key.separator]: () => {},
+    index: (i) => {
+      setMachinesConfig((prev) => {
+        const newIndex = {...prev}
+        newIndex.index = i
+        return newIndex
+      })
+    },
+    addMachine: () => {
+      setMachinesConfig((prev) => {
+        const newMachine = {...prev}
+        newMachine.machines.push({
+          [Key.states]: [""],
+          [Key.alphabet]: [Key.blank, Key.separator, ""],
+          [Key.blank]: Key.blank,
+          [Key.initialState]: "",
+          [Key.acceptingState]: "",
+          [Key.transitions]: {},
+          [Key.input]: [],
+          [Key.separator]: Key.separator,
+        })
+        return newMachine
+      })
+    },
+    removeMachine: (i) => {
+      setMachinesConfig((prev) => {
+        const newMachine = {...prev}
+        newMachine.machines = newMachine.machines.filter((_, index) => index != i)
+        return newMachine
+      })
+    }
+  }), []);
+  return <config.Provider value={[machinesConfig, functions]}>{children}</config.Provider>;
 }

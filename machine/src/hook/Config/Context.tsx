@@ -20,7 +20,7 @@ export enum Key {
   acceptingState = "F",
   transitions = "δ",
   input = "Вводные данные",
-  separator = "#"
+  separator = "#",
 }
 export interface Rule {
   [key: State]: {
@@ -29,24 +29,49 @@ export interface Rule {
 }
 
 export interface TuringMachineConfig {
-  [Key.states]: [State[], Setter<State[]>];
-  [Key.alphabet]: [Symbol[], Setter<Symbol[]>];
-  [Key.blank]: [Symbol, Setter<Symbol>];
-  [Key.initialState]: [State, Setter<State>];
-  [Key.acceptingState]: [State, Setter<State>];
-  [Key.transitions]: [Rule, Setter<Rule>];
-  [Key.input]: [Symbol[], Setter<Symbol[]>];
-  [Key.separator]: [Symbol, Setter<Symbol>]
+  [Key.states]: State[];
+  [Key.alphabet]: Symbol[];
+  [Key.blank]: Symbol;
+  [Key.initialState]: State;
+  [Key.acceptingState]: State;
+  [Key.transitions]: Rule;
+  [Key.input]: Symbol[];
+  [Key.separator]: Symbol;
+}
+export interface TuringMachine {
+  index: number
+  machines: TuringMachineConfig[]
+}
+export interface FunctionsUpdateTuringMachine {
+  [Key.states]: (index:number, write:State) => void;
+  [Key.alphabet]: (index:number, write:Symbol) => void;
+  [Key.blank]: (write:Symbol) => void;
+  [Key.initialState]: (write:Symbol) => void;
+  [Key.acceptingState]: (write:Symbol) => void;
+  [Key.transitions]: (nextState:string, write:Symbol, move: Direction) => void;
+  [Key.input]: (str: string) => void;
+  [Key.separator]: (write:Symbol) => void;
+  index: (index:number) => void,
+  addMachine: () => void
+  removeMachine: (index:number) => void 
 }
 
-const context = createContext<TuringMachineConfig>({
-  [Key.states]: [[], () => { } ],
-  [Key.alphabet]: [[], () => { } ],
-  [Key.blank]: ["", () => { } ],
-  [Key.initialState]: ["", () => { } ],
-  [Key.acceptingState]: ["", () => { } ],
-  [Key.transitions]: [{}, () => { } ],
-  [Key.input]: [[], () => { } ],
-  [Key.separator]: ['', () => {}]
-});
-export default context;
+const config = createContext<[TuringMachine, FunctionsUpdateTuringMachine]>([{
+  index: NaN,
+  machines: []
+}, {
+  [Key.states]: () => {},
+  [Key.alphabet]: () => {},
+  [Key.blank]: () => {},
+  [Key.initialState]: () => {},
+  [Key.acceptingState]: () => {},
+  [Key.transitions]: () => {},
+  [Key.input]: () => {},
+  [Key.separator]: () => {},
+  index: () => {},
+  addMachine: () => {},
+  removeMachine: () => {}
+}]);
+
+export default config
+

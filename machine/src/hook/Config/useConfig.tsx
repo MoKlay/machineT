@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import Context, { TuringMachineConfig } from './Context';
+import context from "./Context";
 
-export default function useConfig(): TuringMachineConfig {
-  const config = useContext(Context);
+export default function useConfig() {
+  const config = useContext(context);
   if (!config) {
     throw new Error("useConfig must be used within a ConfigProvider");
   }

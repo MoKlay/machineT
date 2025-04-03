@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import context, { GraphConfig, Position } from './Context';
+import context, { Position } from './Context';
 import useConfig from '../Config/useConfig';
 import { Key } from '../Config/Context';
 

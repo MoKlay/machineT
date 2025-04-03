@@ -10,7 +10,7 @@ export default function SetOfCommands() {
         description="Конечное множество состояний управляющего устройства"
       />
       <InputMass type={Key.alphabet} char description="Входной алфавит" />
-      <RolesInputs />
+      {/* <RolesInputs /> */}
     </section>
   );
 }

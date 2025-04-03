@@ -1,6 +1,6 @@
 import { useCallback, ChangeEvent } from "react";
 import RuleState from "../components/Rules/Rule";
-import { Key, Rule, Symbol, Transition } from "../hook/Config/Context";
+import { Key, Rule } from "../hook/Config/Context";
 import useConfig from "../hook/Config/useConfig";
 
 export default function ComplianceTable() {
@@ -136,6 +136,7 @@ export default function ComplianceTable() {
   return (
     <section>
       <table>
+        <tbody>
         <tr>
           <th>Q / A</th>
           {alphabet.map((v, i) => (
@@ -175,6 +176,8 @@ export default function ComplianceTable() {
               ))}
           </tr>
         ))}
+
+        </tbody>
       </table>
     </section>
   );
