@@ -12,7 +12,7 @@ export default function Machines() {
       <div className="tab">
         <button onClick={() => setContext.addMachine()}>Добавить</button>
         {context.machines.map((_, i) => (
-          <button key={i} onClick={() => setContext.index(i)}>Машина {i + 1}</button>
+          <button key={i} className={context.index == i ? 'active' : ''} onClick={() => setContext.index(i)}>Машина {i + 1}</button>
         ))}
       </div>
       {context.machines.length != 0 && <App />}

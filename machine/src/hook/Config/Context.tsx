@@ -4,10 +4,16 @@ export type State = string;
 export type Symbol = string;
 export type Direction = "L" | "R" | "E";
 
+export enum TransitionKey {
+  write,
+  move,
+  nextState
+}
+
 export interface Transition {
-  write: Symbol;
-  move: Direction;
-  nextState: State;
+  [TransitionKey.write]: Symbol;
+  [TransitionKey.move]: Direction;
+  [TransitionKey.nextState]: State;
 }
 
 export type Setter<T> = Dispatch<SetStateAction<T>>;
@@ -43,12 +49,16 @@ export interface TuringMachine {
   machines: TuringMachineConfig[]
 }
 export interface FunctionsUpdateTuringMachine {
-  [Key.states]: (index:number, write:State) => void;
-  [Key.alphabet]: (index:number, write:Symbol) => void;
+  [Key.states]: (index:number, write:State, deleted?:boolean) => void;
+  [Key.alphabet]: (index:number, write:Symbol, deleted?:boolean) => void;
   [Key.blank]: (write:Symbol) => void;
   [Key.initialState]: (write:Symbol) => void;
   [Key.acceptingState]: (write:Symbol) => void;
-  [Key.transitions]: (nextState:string, write:Symbol, move: Direction) => void;
+  [Key.transitions]: {
+    [TransitionKey.nextState]: (state: State, read: Symbol, write: State) => void;
+    [TransitionKey.write]: (state: State, read: Symbol, write: Symbol) => void;
+    [TransitionKey.move]: (state: State, read: Symbol, write: Direction) => void;
+  }
   [Key.input]: (str: string) => void;
   [Key.separator]: (write:Symbol) => void;
   index: (index:number) => void,
@@ -65,7 +75,11 @@ const config = createContext<[TuringMachine, FunctionsUpdateTuringMachine]>([{
   [Key.blank]: () => {},
   [Key.initialState]: () => {},
   [Key.acceptingState]: () => {},
-  [Key.transitions]: () => {},
+  [Key.transitions]: {
+    [TransitionKey.nextState]: () => {},
+    [TransitionKey.write]:() => {},
+    [TransitionKey.move]:() => {}
+  },
   [Key.input]: () => {},
   [Key.separator]: () => {},
   index: () => {},
