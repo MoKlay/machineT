@@ -1,14 +1,12 @@
-import Config from "./hook/Config/Provider"
-import ConfigSetting from "./page/ConfigSetting"
-
+import useConfig from "./hook/Config/useConfig";
+import ConfigSetting from "./page/ConfigSetting";
 
 function App() {
-
   return (
-
+    <>
       <ConfigSetting />
-
-  )
+    </>
+  );
 }
 
-export default App
+export default App;

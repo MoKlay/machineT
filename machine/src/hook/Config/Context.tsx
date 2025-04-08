@@ -49,8 +49,8 @@ export interface TuringMachine {
   machines: TuringMachineConfig[]
 }
 export interface FunctionsUpdateTuringMachine {
-  [Key.states]: (index:number, write:State, deleted?:boolean) => void;
-  [Key.alphabet]: (index:number, write:Symbol, deleted?:boolean) => void;
+  [Key.states]: (index:number, write:State) => void;
+  [Key.alphabet]: (index:number, write:Symbol) => void;
   [Key.blank]: (write:Symbol) => void;
   [Key.initialState]: (write:Symbol) => void;
   [Key.acceptingState]: (write:Symbol) => void;

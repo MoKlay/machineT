@@ -11,7 +11,7 @@ import config, {
 
 export default function Config({ children }: React.PropsWithChildren) {
   const [machinesConfig, setMachinesConfig] = useState<TuringMachine>({
-    index: 0,
+    index: -1,
     machines: [],
   });
 
@@ -45,6 +45,10 @@ export default function Config({ children }: React.PropsWithChildren) {
             ...machine,
             [Key.states]: newState,
             [Key.transitions]: newRule,
+            [Key.initialState]: newState[0] ? newState[0] : "",
+            [Key.acceptingState]: newState[newState.length - 1]
+              ? newState[newState.length - 1]
+              : "",
           };
           break;
         case Key.alphabet:
@@ -52,6 +56,8 @@ export default function Config({ children }: React.PropsWithChildren) {
             ...machine,
             [Key.alphabet]: alphabet,
             [Key.transitions]: newRule,
+            [Key.blank]: alphabet[0],
+            [Key.separator]: alphabet[1],
           };
           break;
         case Key.transitions:
@@ -84,11 +90,11 @@ export default function Config({ children }: React.PropsWithChildren) {
     }
 
     return {
-      [Key.states]: (i, w, deleted) => {
+      [Key.states]: (i, w) => {
         const { newState, alphabet, newRule } = getClone();
-        if (deleted && w == "") {
-          newState.splice(i, 1);
+        if (w == "") {
           delete newRule[newState[i]];
+          newState.splice(i, 1);
         } else if (!newState.includes(w)) {
           newRule[w] = newRule[newState[i]]
             ? { ...newRule[newState[i]] }
@@ -115,23 +121,32 @@ export default function Config({ children }: React.PropsWithChildren) {
           alphabet,
         });
       },
-      [Key.alphabet]: (i, w, deleted) => {
+      [Key.alphabet]: (i, w) => {
         const { newState, alphabet, newRule } = getClone();
-        if (deleted && w == "") {
-          alphabet.splice(i, 1);
+        if (w == "") {
           newState.forEach((state) => {
             delete newRule[state][alphabet[i]];
           });
+          alphabet.splice(i, 1);
         } else if (!alphabet.includes(w)) {
           newState.forEach((state) => {
             if (!newRule[state]) newRule[state] = {};
-            newRule[state][w] = newRule[state][alphabet[i]]
-              ? newRule[state][alphabet[i]]
-              : {
-                  [TransitionKey.nextState]: state,
-                  [TransitionKey.write]: w,
-                  [TransitionKey.move]: "E",
-                };
+            const rule = newRule[state][alphabet[i]];
+            if (rule) {
+              if (!newState.includes(rule[TransitionKey.nextState])) {
+                rule[TransitionKey.nextState] = state;
+              }
+              if (!alphabet.includes(rule[TransitionKey.write])) {
+                rule[TransitionKey.write] = w;
+              }
+              newRule[state][w] = rule;
+            } else {
+              newRule[state][w] = {
+                [TransitionKey.nextState]: state,
+                [TransitionKey.write]: w,
+                [TransitionKey.move]: "E",
+              };
+            }
           });
           alphabet[i] = w;
         }
@@ -170,11 +185,11 @@ export default function Config({ children }: React.PropsWithChildren) {
             alphabet.includes(write)
           )
             newRule[state][read][TransitionKey.nextState] = write;
-            updateMachine(Key.transitions, {
-              newRule,
-              newState,
-              alphabet,
-            });
+          updateMachine(Key.transitions, {
+            newRule,
+            newState,
+            alphabet,
+          });
         },
         [TransitionKey.move]: (state, read, write) => {
           const { newState, alphabet, newRule } = getClone();
@@ -187,7 +202,18 @@ export default function Config({ children }: React.PropsWithChildren) {
           });
         },
       },
-      [Key.input]: () => {},
+      [Key.input]: (str) => {
+        setMachinesConfig((prev) => {
+          const newConfig = structuredClone(prev.machines[prev.index]);
+          newConfig[Key.input] = str.split("");
+          const newMass = [...prev.machines];
+          newMass[prev.index] = newConfig;
+          return {
+            ...prev,
+            machines: [...newMass],
+          };
+        });
+      },
       [Key.separator]: () => {},
       index: (i) => {
         setMachinesConfig((prev) => {
@@ -215,12 +241,23 @@ export default function Config({ children }: React.PropsWithChildren) {
         }));
       },
       removeMachine: (i) => {
-        setMachinesConfig((prev) => {
-          const newMachine = { ...prev };
-          newMachine.machines = newMachine.machines.filter(
-            (_, index) => index != i
-          );
-          return newMachine;
+        const newMachine = structuredClone(machinesConfig.machines);
+        newMachine.splice(i, 1);
+
+        let newIndex = machinesConfig.index;
+        if (i < machinesConfig.index) {
+          // Если удаляем элемент перед текущим индексом
+          newIndex = Math.max(0, machinesConfig.index - 1); // Уменьшаем индекс, но не ниже 0
+        } else if (i === machinesConfig.index && newMachine.length > 0) {
+          // Если удаляем текущий элемент, но остались элементы
+          newIndex = Math.max(0, machinesConfig.index - 1);
+        } else if (i === machinesConfig.index && newMachine.length === 0) {
+          newIndex = -1; //если удалили последний элемент
+        }
+
+        setMachinesConfig({
+          index: newIndex + 0,
+          machines: newMachine,
         });
       },
     };

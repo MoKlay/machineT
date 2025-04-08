@@ -1,25 +1,19 @@
-import { Direction, Key, Setter } from "../../hook/Config/Context";
+import { useState } from "react";
+import { Direction, Key, TransitionKey } from "../../hook/Config/Context";
 import useConfig from "../../hook/Config/useConfig";
 interface InputDirection {
-  useState: [Direction, Setter<Direction>]
   state: string
   read: string
 }
 
-export default function InputDirection({state, read, useState}:InputDirection) {
-  const [value, setValue] = useState
-  const setTransitions = useConfig()[Key.transitions][1]
+export default function InputDirection({state, read}:InputDirection) {
+  const [config ,functions] = useConfig()
+  const machine = config.machines[config.index]
+  const [value, setValue] = useState<Direction>(machine[Key.transitions][state][read][TransitionKey.move])
 
   function handleClick(value: Direction) {
     setValue(value)
-    setTransitions((preview) => {
-      const newRule = {...preview}
-      newRule[state][read] = {
-        ...newRule[state][read],
-        move: value
-      }
-      return newRule
-    })
+    functions[Key.transitions][TransitionKey.move](state, read, value)
   }
 
   return (

@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "cytoscape": "^3.31.1",
+    "handy-svg": "^1.0.8",
     "react": "^19.0.0",
     "react-cytoscapejs": "^2.0.0",
     "react-dom": "^19.0.0",

@@ -16,12 +16,8 @@ interface PropsInput {
   char?: boolean;
 }
 
-export default function InputMass({
-  title,
-  type,
-  description,
-}: PropsInput) {
-  const [state, setState] = useConfig()
+export default function InputMass({ title, type, description }: PropsInput) {
+  const [state, setState] = useConfig();
 
   return (
     <>
@@ -29,17 +25,20 @@ export default function InputMass({
         <p>{`${title ? title : type} = {`}</p>
         <div className="input">
           {state.machines[state.index][type].map((s, i) => (
-            <div>
+            <div key={i}>
               <input
-                key={i}
                 type="text"
                 value={s}
-                style={{ width: s.length + 0.3 + "ch" }}
+                style={{ width: s.length > 0 ? s.length + 0.3 + "ch": undefined }}
                 onChange={(e) => {
-                  setState[type](i, type == Key.states ? e.currentTarget.value : e.currentTarget.value[0] ? e.currentTarget.value[0] : '')
-                }}
-                onBlur={(e) => {
-                  setState[type](i, e.currentTarget.value, true)
+                  setState[type](
+                    i,
+                    type == Key.states
+                      ? e.currentTarget.value
+                      : e.currentTarget.value[0]
+                      ? e.currentTarget.value[0]
+                      : ""
+                  );
                 }}
               />
             </div>
