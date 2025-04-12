@@ -1,22 +1,23 @@
 import { Key } from "../hook/Config/Context";
-import useConfig from "../hook/Config/useConfig";
-import Rule from "./Rules/Rule";
+import useMachine from "../hook/Config/useMachine";
+import useRunMachine from "../hook/StatusMachine/useRunMachine";
+import RuleState from "./Rules/Rule";
 
 export default function RolesInputs() {
-  const context = useConfig()[0]
-  const massRole = Object.entries(context.machines[context.index][Key.transitions]).map(([k, v]) => [
-    k,
-    Object.keys(v),
-  ]);
-
+  const machine = useMachine()
+  const [status] = useRunMachine()
+  const currState = status.currentState
+  const symbolReading = status.symbol
   return (
     <div className="rules">
       <p>δ:</p>
-      {massRole.map(([state, reads], i) => (
+      {machine[Key.states].slice(0, -2).map((state, i) => machine[Key.transitions][state] && (
         <div key={i} className="rules-state">
-          {Array.isArray(reads) &&
-            typeof state == "string" &&
-            reads.map((read, i) => <Rule key={i} state={state} read={read} leftShow/>)}
+          {
+            machine[Key.alphabet].slice(0, -1).map((read, j) => machine[Key.transitions][state][read] && (
+              <RuleState key={j} state={state} read={read} leftShow active={state == currState && read == symbolReading}/>
+            ))
+          }
         </div>
       ))}
     </div>

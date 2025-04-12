@@ -27,7 +27,9 @@
       100%
         transform: translateX(40px)
     .tape-cell
-      background: #fff
+      color: #686868
+      user-select: none
+      background: #313131
       display: flex
       justify-content: center
       align-items: center
@@ -40,6 +42,11 @@
       font-size: 16px
       box-sizing: border-box
       flex-shrink: 0
+      &.bold
+        color: #fff
+        font-weight: 700
+      &.reading
+        color: red
   .head
     box-shadow: inset 0 0 4px 2px
     position: absolute

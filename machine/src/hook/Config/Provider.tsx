@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import config, {
   FunctionsUpdateTuringMachine,
   Key,
@@ -14,6 +14,18 @@ export default function Config({ children }: React.PropsWithChildren) {
     index: -1,
     machines: [],
   });
+  useEffect(() => {
+    const config = localStorage.getItem("configsave");
+    if (config) {
+      const parse = JSON.parse(config);
+      if (parse) setMachinesConfig(JSON.parse(config));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (machinesConfig.machines.length != 0)
+      localStorage.setItem("configsave", JSON.stringify(machinesConfig));
+  }, [machinesConfig]);
 
   const functions = useMemo<FunctionsUpdateTuringMachine>(() => {
     const { index, machines } = machinesConfig;
@@ -46,8 +58,8 @@ export default function Config({ children }: React.PropsWithChildren) {
             [Key.states]: newState,
             [Key.transitions]: newRule,
             [Key.initialState]: newState[0] ? newState[0] : "",
-            [Key.acceptingState]: newState[newState.length - 1]
-              ? newState[newState.length - 1]
+            [Key.acceptingState]: newState[newState.length - 2]
+              ? newState[newState.length - 2]
               : "",
           };
           break;
@@ -90,24 +102,45 @@ export default function Config({ children }: React.PropsWithChildren) {
     }
 
     return {
+      // ‍‍⁡⁢⁢⁢Обновление состояния⁡
       [Key.states]: (i, w) => {
         const { newState, alphabet, newRule } = getClone();
         if (w == "") {
           delete newRule[newState[i]];
           newState.splice(i, 1);
         } else if (!newState.includes(w)) {
-          newRule[w] = newRule[newState[i]]
-            ? { ...newRule[newState[i]] }
-            : Object.fromEntries<Transition>(
-                alphabet.map((v) => [
+          newRule[w] = Object.fromEntries<Transition>(
+            alphabet.map((v) => {
+              if (newRule[newState[i]] && newRule[newState[i]][v]) {
+                const rule = newRule[newState[i]][v];
+                const nextState =
+                  newState.includes(rule[TransitionKey.nextState]) &&
+                  rule[TransitionKey.nextState] === w
+                    ? rule[TransitionKey.nextState]
+                    : w;
+                const write = alphabet.includes(rule[TransitionKey.write])
+                  ? rule[TransitionKey.write]
+                  : v;
+                const move = rule[TransitionKey.move] || "E";
+                return [
                   v,
                   {
-                    [TransitionKey.nextState]: w,
-                    [TransitionKey.write]: v,
-                    [TransitionKey.move]: "E",
-                  } as Transition,
-                ])
-              );
+                    [TransitionKey.nextState]: nextState,
+                    [TransitionKey.write]: write,
+                    [TransitionKey.move]: move,
+                  },
+                ];
+              }
+              return [
+                v,
+                {
+                  [TransitionKey.nextState]: w,
+                  [TransitionKey.write]: v,
+                  [TransitionKey.move]: "E",
+                } as Transition,
+              ];
+            })
+          );
           if (newState[i] && newRule[newState[i]]) {
             delete newRule[newState[i]];
           }
@@ -133,10 +166,16 @@ export default function Config({ children }: React.PropsWithChildren) {
             if (!newRule[state]) newRule[state] = {};
             const rule = newRule[state][alphabet[i]];
             if (rule) {
-              if (!newState.includes(rule[TransitionKey.nextState])) {
+              if (
+                !newState.includes(rule[TransitionKey.nextState]) ||
+                rule[TransitionKey.nextState] !== state
+              ) {
                 rule[TransitionKey.nextState] = state;
               }
-              if (!alphabet.includes(rule[TransitionKey.write])) {
+              if (
+                !alphabet.includes(rule[TransitionKey.write]) ||
+                rule[TransitionKey.write] !== w
+              ) {
                 rule[TransitionKey.write] = w;
               }
               newRule[state][w] = rule;
@@ -164,32 +203,26 @@ export default function Config({ children }: React.PropsWithChildren) {
       [Key.transitions]: {
         [TransitionKey.nextState]: (state, read, write) => {
           const { newState, alphabet, newRule } = getClone();
-          if (
-            newState.includes(state) &&
-            alphabet.includes(read) &&
-            newState.includes(write)
-          )
+          if (newState.includes(write)) {
             newRule[state][read][TransitionKey.nextState] = write;
 
-          updateMachine(Key.transitions, {
-            newRule,
-            newState,
-            alphabet,
-          });
+            updateMachine(Key.transitions, {
+              newRule,
+              newState,
+              alphabet,
+            });
+          }
         },
         [TransitionKey.write]: (state, read, write) => {
           const { newState, alphabet, newRule } = getClone();
-          if (
-            newState.includes(state) &&
-            alphabet.includes(read) &&
-            alphabet.includes(write)
-          )
-            newRule[state][read][TransitionKey.nextState] = write;
-          updateMachine(Key.transitions, {
-            newRule,
-            newState,
-            alphabet,
-          });
+          if (alphabet.includes(write)) {
+            newRule[state][read][TransitionKey.write] = write;
+            updateMachine(Key.transitions, {
+              newRule,
+              newState,
+              alphabet,
+            });
+          }
         },
         [TransitionKey.move]: (state, read, write) => {
           const { newState, alphabet, newRule } = getClone();
@@ -205,13 +238,20 @@ export default function Config({ children }: React.PropsWithChildren) {
       [Key.input]: (str) => {
         setMachinesConfig((prev) => {
           const newConfig = structuredClone(prev.machines[prev.index]);
-          newConfig[Key.input] = str.split("");
-          const newMass = [...prev.machines];
-          newMass[prev.index] = newConfig;
-          return {
-            ...prev,
-            machines: [...newMass],
-          };
+
+          if (
+            newConfig[Key.alphabet].includes(str[str.length - 1]) ||
+            str == ""
+          ) {
+            newConfig[Key.input] = str.split("");
+            const newMass = [...prev.machines];
+            newMass[prev.index] = newConfig;
+            return {
+              ...prev,
+              machines: [...newMass],
+            };
+          }
+          return prev;
         });
       },
       [Key.separator]: () => {},

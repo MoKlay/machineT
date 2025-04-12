@@ -90,6 +90,7 @@ body
         user-select: none
         font-size: 1.5rem
         
+        
 
         *
           font-size: 1.5rem
@@ -125,6 +126,7 @@ body
 
               input
                 width: 0
+                
                 &:focus
                   visibility: visible
                   padding: 1px 5px
@@ -144,6 +146,9 @@ body
           outline: 0
           transition: .1s ease
           width: 1ch
+          &.active
+            color: red
+            font-weight: 700
           &:focus
             padding: 1px 5px
             border: 1px solid
@@ -204,7 +209,10 @@ body
       margin-left: 2ch
       display: flex
       align-items: center
-
+      &.active
+        *
+          color: red
+          font-weight: 700
       
 
       .path
@@ -215,6 +223,7 @@ body
             content: '⮕'
             margin: 0 1ch
         div
+          display: flex
           &::after
             content: ","
             margin-right: 0.5ch

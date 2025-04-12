@@ -1,5 +1,6 @@
 import useConfig from "../hook/Config/useConfig";
 import { Key } from "../hook/Config/Context";
+import useRunMachine from "../hook/StatusMachine/useRunMachine";
 
 interface PropsInput {
   title?: string;
@@ -18,6 +19,10 @@ interface PropsInput {
 
 export default function InputMass({ title, type, description }: PropsInput) {
   const [state, setState] = useConfig();
+  const status = useRunMachine()
+
+  const currState = status[0].currentState
+
 
   return (
     <>
@@ -30,6 +35,7 @@ export default function InputMass({ title, type, description }: PropsInput) {
                 type="text"
                 value={s}
                 style={{ width: s.length > 0 ? s.length + 0.3 + "ch": undefined }}
+                className={`${type == Key.states && currState == s ? 'active': ''}`}
                 onChange={(e) => {
                   setState[type](
                     i,
@@ -40,6 +46,7 @@ export default function InputMass({ title, type, description }: PropsInput) {
                       : ""
                   );
                 }}
+                disabled={type == Key.alphabet && (i == 0 || i == 1) }
               />
             </div>
           ))}

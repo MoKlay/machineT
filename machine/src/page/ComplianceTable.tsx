@@ -7,8 +7,7 @@ import useUpdateMachine from "../hook/Config/useUpdateMachine";
 export default function ComplianceTable() {
   const context = useMachine();
   const functions = useUpdateMachine()
-  const al = context[Key.alphabet].slice(0, -1).sort()
-  al.push('')
+  
 
   return context && (
     <section>
@@ -16,39 +15,22 @@ export default function ComplianceTable() {
         <tbody>
         <tr>
           <th>Q / A</th>
-          {al.map((v, i) => (
+          {context[Key.alphabet].slice(0, -1).map((v, i) => (
             <th key={v}>
-              <label>
-                <input
-                  type="text"
-                  value={v}
-                  style={{ width: v.length * 1.5 + "ch" }}
-                  onChange={(e) => functions[Key.alphabet](i, e.currentTarget.value[0])}
-                  onFocus={(e) => e.currentTarget.select()}
-                />
-              </label>
+              {v}
             </th>
           ))}
         </tr>
-        {context[Key.states].map((state, i) => (
+        {context[Key.states].slice(0, -2).map((state, i) => context[Key.states].length != i+1 && (
           <tr key={i}>
             <th>
-              <label>
-                <input
-                  type="text"
-                  value={state}
-                  style={{ width: state.length * 1.2 + "ch" }}
-                  onFocus={(e) => e.currentTarget.select()}
-                  onChange={(e) => functions[Key.states](i, e.currentTarget.value)}
-                />
-              </label>
+              {state}
             </th>
-            {context[Key.transitions][state] &&
-              Object.keys(context[Key.transitions][state]).map((read, j) => (
-                <td key={j}>
-                  <RuleState state={state} read={read} />
-                </td>
-              ))}
+            {context[Key.alphabet].slice(0, -1).map((read, j) => (
+              <td key={j}>
+                {context[Key.transitions][state] && context[Key.transitions][state][read] && <RuleState state={state} read={read} />}
+              </td>
+            ))}
           </tr>
         ))}
 

@@ -1,12 +1,17 @@
 import App from "./App";
 import Panel from "./components/lenta/Panel";
 import useConfig from "./hook/Config/useConfig";
+import useRunMachine from "./hook/StatusMachine/useRunMachine";
 export default function Machines() {
   const [context, setContext] = useConfig();
+  const [{run}] = useRunMachine()
 
   return (
     <div className="app">
-      <div className="config-window">
+      <div className="config-window" style={run ? {
+        userSelect: 'none',
+        opacity:'0.4'
+      }: undefined}>
         <div className="tab">
           {context.machines.map((_, i) => (
             <div

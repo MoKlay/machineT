@@ -7,11 +7,12 @@ interface Rule {
   state: string;
   read: string;
   leftShow?: boolean;
+  active?: boolean
 }
 
-export default function RuleState({ state, read, leftShow }: Rule) {
+export default function RuleState({ state, read, leftShow, active }: Rule) {
   return (
-    <div className="rule">
+    <div className={`rule${active ? ' active' : ''}`}>
       {leftShow && (
         <div className="path">
           <div>

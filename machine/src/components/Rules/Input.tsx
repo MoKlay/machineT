@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Key, TransitionKey } from '../../hook/Config/Context';
-import useConfig from "../../hook/Config/useConfig";
+import useUpdateMachine from "../../hook/Config/useUpdateMachine";
+import useMachine from "../../hook/Config/useMachine";
 
 interface InputProps {
   type: Extract<Key, Key.alphabet | Key.states>;
@@ -10,32 +11,30 @@ interface InputProps {
 }
 
 export default function Input({ type, argType, read, state }: InputProps) {
-  const [config, functions] = useConfig()
-  const machine = config.machines[config.index]
-  const path = machine[Key.transitions][state][read][argType]
-  const arg = config.machines[config.index][type].slice(0, -1)
-  const [curVal, setCurVal] = useState(path);
-
+  const functions = useUpdateMachine()
+  const machine = useMachine()
+  const value = machine[Key.transitions][state][read][argType]
+  const ref = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    setCurVal(path)
-  }, [path])
+    if (ref.current) {
+      ref.current.value = value
+    }
+  }, [value])
+  
 
-  function handleClick() {
-    if (arg.includes(curVal)) {
-      functions[Key.transitions][argType](state, read, curVal)
-    }
-    else {
-      setCurVal(path)
-    }
+  function handleClick(value: string) {
+    functions[Key.transitions][argType](state, read, value)
   }
   return (
     <div>
       <input
+      ref={ref}
         type="text"
-        value={curVal}
         placeholder=""
-        onChange={(e) => setCurVal(type == Key.alphabet ? e.currentTarget.value[0] : e.currentTarget.value)}
-        onBlur={handleClick}
+        style={ref.current && ref.current.value.length > 1 ? {
+          width: ref.current.value.length + 'ch'
+        } : undefined} 
+        onBlur={(e) => handleClick(type == Key.alphabet ? e.currentTarget.value[0] ? e.currentTarget.value[0]: '' : e.currentTarget.value)}
       />
       {/* <div className="choices">
         {
